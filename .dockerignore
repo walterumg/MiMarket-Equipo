@@ -1,0 +1,9 @@
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+.vscode
+README.md
+INICIAR_MIMARKET.bat
+database
