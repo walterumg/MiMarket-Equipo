@@ -1,0 +1,2 @@
+<?php
+require __DIR__.'/app/Core.php';$email=$argv[1]??'admin@mimarket.local';$pass=$argv[2]??'admin123';$name='Administrador MiMarket';$db=DB::get();$s=$db->prepare('SELECT id FROM users WHERE email=?');$s->execute([$email]);if($id=$s->fetchColumn()){$db->prepare("UPDATE users SET password=?,role='admin' WHERE id=?")->execute([password_hash($pass,PASSWORD_DEFAULT),$id]);}else{$db->prepare("INSERT INTO users(name,email,password,role) VALUES(?,?,?,'admin')")->execute([$name,$email,password_hash($pass,PASSWORD_DEFAULT)]);}echo "Admin listo: $email\n";
