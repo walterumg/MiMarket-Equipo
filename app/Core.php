@@ -30,7 +30,14 @@ function sendMailSMTP($to,$subject,$html,$attachment=null,$attachmentName='factu
  $c=require __DIR__.'/../config/config.php';$m=$c['mail'];
  if(!$m['host']||!$m['user']||!$m['pass'])return false;
  $host=$m['host'];$port=(int)$m['port'];$secure=strtolower($m['secure']);$target=($secure==='ssl'?'ssl://':'').$host;
- $fp=@stream_socket_client($target.':'.$port,$errno,$errstr,12);if(!$fp)return false;stream_set_timeout($fp,12);
+ $fp=@stream_socket_client($target.':'.$port,$errno,$errstr,12);
+
+if(!$fp){
+    error_log("MiMarket SMTP: No se pudo conectar a {$target}:{$port}. Error {$errno}: {$errstr}");
+    return false;
+}
+
+stream_set_timeout($fp,12);
  $read=function()use($fp){$out='';while(($l=fgets($fp,515))!==false){$out.=$l;if(strlen($l)<4||$l[3]!=='-')break;}return $out;};
  $cmd=function($s,$codes)use($fp,$read){fwrite($fp,$s."\r\n");$r=$read();return in_array((int)substr($r,0,3),(array)$codes,true);};
  $read();$cmd('EHLO mimarket',[250]);
